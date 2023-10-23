@@ -1,0 +1,18 @@
+# Fichier .gitignore
+
+# Environnement virtuel
+venv/
+
+# Fichiers cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Autres fichiers/dossiers pouvant être ignorés
+*.log
+#*.csv
+*.lock
+*.bak
+*.swp
+*.swo
