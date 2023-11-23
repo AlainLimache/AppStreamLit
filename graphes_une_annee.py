@@ -10,6 +10,10 @@ def run_graphes_une_annee(authenticator, role, categories_questions, variables):
     sns.set(style="whitegrid", font_scale=1.1, rc={"figure.figsize": (10, 5)})
     plt.rcParams["figure.figsize"] = [10, 5]
 
+    categories_questions = list()
+    variables = list()
+    radio_buttons = dict()
+
     st.title("Analyse et visualisation de données de qualité de vie au travail pour une année")
 
     Utils.newLines(2)
@@ -27,6 +31,25 @@ def run_graphes_une_annee(authenticator, role, categories_questions, variables):
     uploaded_file = st.file_uploader("Choisissez un fichier CSV", type="csv")
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file, delimiter=';', index_col=0)
+        
+        for column in data.columns:
+            index = 1
+            if data[column].dtype == 'object':
+                index = 0
+            radio_buttons[column] = st.radio(column + ":", options=["Descriptive", "Qualitative", "Ignorer"], index=index, horizontal=True)
+            if radio_buttons[column] == "Descriptive":
+                variables.append(column)
+                if column in categories_questions:
+                    categories_questions.remove(column)
+            elif radio_buttons[column] == "Qualitative":
+                categories_questions.append(column)
+                if column in variables:
+                    variables.remove(column)
+            elif radio_buttons[column] == "Ignorer":
+                if column in categories_questions:
+                    categories_questions.remove(column)
+                if column in variables:
+                    variables.remove(column)
 
         # Nouvelle colonne pour la réponse moyenne calculée
         data['REPONSE_MOYENNE'] = data[categories_questions].sum(axis=1) / len(categories_questions)
@@ -48,7 +71,7 @@ def run_graphes_une_annee(authenticator, role, categories_questions, variables):
         # Pour le grouped bar1: relation entre deux variables en utilisant des points
         st.sidebar.subheader("Grouped bar1")
         scatter_x_var = st.sidebar.selectbox("Variable catégorielle 1 pour le grouped bar1", variables, index=0)
-        color_var = st.sidebar.selectbox("Variable catégorielle 2 (couleur) pour le grouped bar1", variables, index=9)
+        color_var = st.sidebar.selectbox("Variable catégorielle 2 (couleur) pour le grouped bar1", variables, index=0)
 
         Utils.add_separator()
 
@@ -65,7 +88,7 @@ def run_graphes_une_annee(authenticator, role, categories_questions, variables):
         st.sidebar.subheader("Diagramme de Sankey")
         # Pour le diagramme de Sankey
         source_var_Sankey = st.sidebar.selectbox("Variable source", variables, index=0)
-        target_var_Sankey = st.sidebar.selectbox("Variable cible", variables, index=2)
+        target_var_Sankey = st.sidebar.selectbox("Variable cible", variables, index=0)
         color_mode_Sankey = st.sidebar.selectbox("Mode de couleur", ["Par source", "Par cible", "Par source-cible"], index=0)
         min_value_Sankey = st.sidebar.slider("Valeur minimale (réponse moyenne) pour afficher les sous-liens Sankey", 0.0, float(int(max(data['REPONSE_MOYENNE'])+1)), 0.0, step=0.05)
         Utils.add_separator()
