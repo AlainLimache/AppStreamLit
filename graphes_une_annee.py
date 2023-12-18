@@ -10,10 +10,6 @@ def run_graphes_une_annee(authenticator, role, categories_questions, variables):
     sns.set(style="whitegrid", font_scale=1.1, rc={"figure.figsize": (10, 5)})
     plt.rcParams["figure.figsize"] = [10, 5]
 
-    categories_questions = list()
-    variables = list()
-    radio_buttons = dict()
-
     st.title("Analyse et visualisation de données de qualité de vie au travail pour une année")
 
     Utils.newLines(2)
@@ -32,24 +28,7 @@ def run_graphes_une_annee(authenticator, role, categories_questions, variables):
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file, delimiter=';', index_col=0)
         
-        for column in data.columns:
-            index = 1
-            if data[column].dtype == 'object':
-                index = 0
-            radio_buttons[column] = st.radio(column + ":", options=["Descriptive", "Qualitative", "Ignorer"], index=index, horizontal=True)
-            if radio_buttons[column] == "Descriptive":
-                variables.append(column)
-                if column in categories_questions:
-                    categories_questions.remove(column)
-            elif radio_buttons[column] == "Qualitative":
-                categories_questions.append(column)
-                if column in variables:
-                    variables.remove(column)
-            elif radio_buttons[column] == "Ignorer":
-                if column in categories_questions:
-                    categories_questions.remove(column)
-                if column in variables:
-                    variables.remove(column)
+        
 
         # Nouvelle colonne pour la réponse moyenne calculée
         data['REPONSE_MOYENNE'] = data[categories_questions].sum(axis=1) / len(categories_questions)

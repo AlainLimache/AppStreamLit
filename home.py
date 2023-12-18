@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from graphes_deux_annees import run_comparer_deux_annees
 from graphes_une_annee import run_graphes_une_annee
+from insights_page import run_page_insights
 from plot_functions_une_annee import *
 from Utils import Utils
 
@@ -16,7 +17,7 @@ def run_home(authenticator, role="admin"):
 
     Utils.add_separator()
     st.sidebar.title("Navigation")
-    app_mode = st.sidebar.selectbox("Choisissez la page à afficher", ["Page d'accueil", "Une année", "Deux années"])
+    app_mode = st.sidebar.selectbox("Choisissez la page à afficher", ["Page d'accueil", "Une année", "Deux années", "Insights"])
 
     if app_mode == "Page d'accueil":
         st.title("Analyse et visualisation de données de qualité de vie au travail")
@@ -36,4 +37,7 @@ def run_home(authenticator, role="admin"):
 
     elif app_mode == "Deux années":
         run_comparer_deux_annees(authenticator, role, categories_questions, variables)
+    
+    elif app_mode == "Insights":
+        run_page_insights(authenticator, role, categories_questions, variables)
     
