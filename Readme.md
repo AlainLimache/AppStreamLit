@@ -36,9 +36,6 @@
     - app.py : fichier principal de l'application  
     - Utils.py : contient des fonctions utilitaires utilisées par les autres fichiers .py  
 
-  Dossier auth :
-    - __init__.py/add_user.py/authentificator.py/database.py : gestion de l'authentification et des utilisateurs 
-
   Dossier data :
     - Data1007.csv : données fournies au début du projet (non_modifiées)
     - Data1007.xlsx : même chose que Data1007.csv mais sous un format différent

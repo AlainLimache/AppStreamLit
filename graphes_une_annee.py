@@ -5,7 +5,7 @@ import seaborn as sns
 from plot_functions_une_annee import *
 from Utils import Utils
 
-def run_graphes_une_annee(authenticator, role, categories_questions, variables):
+def run_graphes_une_annee(categories_questions, variables):
     # Configurer le style des graphiques
     sns.set(style="whitegrid", font_scale=1.1, rc={"figure.figsize": (10, 5)})
     plt.rcParams["figure.figsize"] = [10, 5]
@@ -27,29 +27,31 @@ def run_graphes_une_annee(authenticator, role, categories_questions, variables):
     """)
 
     Utils.newLines(2)
+                
+    # Créer un volet dépliant pour les options par colonne
+    options_expander = st.expander("Options par colonne", expanded=True)
 
     uploaded_file = st.file_uploader("Choisissez un fichier CSV", type="csv")
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file, delimiter=';', index_col=0)
-        
+
         for column in data.columns:
-            index = 1
-            if data[column].dtype == 'object':
-                index = 0
-            radio_buttons[column] = st.radio(column + ":", options=["Descriptive", "Qualitative", "Ignorer"], index=index, horizontal=True)
-            if radio_buttons[column] == "Descriptive":
-                variables.append(column)
-                if column in categories_questions:
-                    categories_questions.remove(column)
-            elif radio_buttons[column] == "Qualitative":
-                categories_questions.append(column)
-                if column in variables:
-                    variables.remove(column)
-            elif radio_buttons[column] == "Ignorer":
-                if column in categories_questions:
-                    categories_questions.remove(column)
-                if column in variables:
-                    variables.remove(column)
+            index = 1 if data[column].dtype == 'object' else 0
+            with options_expander:
+                radio_buttons[column] = st.radio(column + ":", options=["Descriptive", "Qualitative", "Ignorer"], index=index, horizontal=True)
+                if radio_buttons[column] == "Descriptive":
+                    variables.append(column)
+                    if column in categories_questions:
+                        categories_questions.remove(column)
+                elif radio_buttons[column] == "Qualitative":
+                    categories_questions.append(column)
+                    if column in variables:
+                        variables.remove(column)
+                elif radio_buttons[column] == "Ignorer":
+                    if column in categories_questions:
+                        categories_questions.remove(column)
+                    if column in variables:
+                            variables.remove(column)
 
         # Nouvelle colonne pour la réponse moyenne calculée
         data['REPONSE_MOYENNE'] = data[categories_questions].sum(axis=1) / len(categories_questions)
