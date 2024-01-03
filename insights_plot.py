@@ -26,6 +26,7 @@ def plot_grouped_bar1_test(data, scatter_x_var, scatter_y_var, color_var, color_
                                    hovermode="closest")
     return fig_grouped_bar
 
+
 def plot_linechart(data, descriptor, awnser):
     """
     Plot a linechart for the given data, descriptor and awnser.
@@ -39,10 +40,16 @@ def plot_linechart(data, descriptor, awnser):
 
     # For each descriptor, we create a dataframe with the repartition of answers
     for desc in data[descriptor].unique():
-        df = pd.DataFrame(data.loc[data[descriptor] == desc][awnser].value_counts())
+        # Get the total number of answers for the descriptor
+        total_awnsers = len(data.loc[data[descriptor] == desc][awnser])
+
+        # Get the repartition of answers for the descriptor
+        df = pd.DataFrame(data.loc[data[descriptor] == desc][awnser].value_counts()*100/total_awnsers)
         df = df.reset_index()
         df.columns = [awnser, "count"]
+        # Sort the dataframe by the awnser
         df = df.sort_values(by=[awnser])
+        # Add the dataframe to the dictionary
         data_per_descriptor[desc] = df
 
     # Plot the linechart
@@ -54,7 +61,49 @@ def plot_linechart(data, descriptor, awnser):
     fig.update_layout(
         title="Répartiton des réponses pour {} et {}".format(descriptor, awnser),
         xaxis_title="Réponse",
-        yaxis_title="Nombre de réponses",
+        yaxis_title="Pourcentage des réponses",
+        legend_title="Descripteur"
+    )
+
+    return fig
+
+
+def plot_barchart(data, descriptor, awnser):
+    """
+    Plot a barchart for the given data, descriptor and awnser.
+    Parameters :
+        data : dataframe
+        descriptor : string
+        awnser : string    
+    """
+    # Variable to stock the repartition of answers for each descriptor
+    data_per_descriptor = dict()
+
+    # For each descriptor, we create a dataframe with the repartition of answers
+    for desc in data[descriptor].unique():
+        # Get the total number of answers for the descriptor
+        total_awnsers = len(data.loc[data[descriptor] == desc][awnser])
+
+        # Get the repartition of answers for the descriptor
+        df = pd.DataFrame(data.loc[data[descriptor] == desc][awnser].value_counts()*100/total_awnsers)
+        df = df.reset_index()
+        df.columns = [awnser, "count"]
+        # Sort the dataframe by the awnser
+        df = df.sort_values(by=[awnser])
+        # Add the dataframe to the dictionary
+        data_per_descriptor[desc] = df
+
+    
+    # Plot the barchart
+    fig = go.Figure()
+
+    for desc in data_per_descriptor.keys():
+        fig.add_trace(go.Bar(x=data_per_descriptor[desc][awnser], y=data_per_descriptor[desc]["count"], name=desc))
+
+    fig.update_layout(
+        title="Répartiton des réponses pour {} et {}".format(descriptor, awnser),
+        xaxis_title="Réponse",
+        yaxis_title="Pourcentage des réponses",
         legend_title="Descripteur"
     )
 

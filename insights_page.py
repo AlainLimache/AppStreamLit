@@ -79,44 +79,86 @@ def run_page_insights(authenticator, role, qualifiers, variables):
         st.header("Visualisations")
         Utils.newLines(1)
 
+        strong_toggle = True#st.toggle('Generate strong insights')
+        medium_toggle = False#st.toggle('Generate medium insights')
+        weak_toggle = False#st.toggle('Generate weak insights')
+        none_toggle = False#st.toggle('Generate not insights')
+
         #-----------------------------------------------------------------------
 
-        for variable in variables:
-            if data[variable].nunique() <= 2:
-                for awnser in qualifiers:
+        for variable in variables:            
+            for awnser in qualifiers:
+                if data[variable].nunique() <= 2:
                     #pvalue = calculate_chi2(data[[variable, awnser]], variable, awnser)
-                    pvalue = 0.5
-                    combo = {
-                        "variable": variable,
-                        "awnser": awnser,
-                        "pvalue": pvalue
-                    }
+                    #print(pvalue)
+                    pvalue = 0.01
+                else:
+                    pvalue = 1
+                #pvalue = calculate_chi2(data[[variable, awnser]], variable, awnser)
+                combo = {
+                    "variable": variable,
+                    "awnser": awnser,
+                    "pvalue": pvalue
+                }
+                insights_strong.append(combo)
+                """
+                if pvalue < 0.05:
                     insights_strong.append(combo)
-                    """
-                    if pvalue < 0.05:
-                        insights_strong.append(combo)
-                    elif pvalue < 0.1:
-                        insights_medium.append(combo)
-                    elif pvalue < 0.2:
-                        insights_weak.append(combo)
-                    else:
-                        insights_none.append(combo)
-                    """
+                elif pvalue < 0.1:
+                    insights_medium.append(combo)
+                elif pvalue < 0.2:
+                    insights_weak.append(combo)
+                else:
+                    insights_none.append(combo)
+                """
+                
+            
         
         insights_strong = sorted(insights_strong, key=lambda x: x["pvalue"])
         insights_medium = sorted(insights_medium, key=lambda x: x["pvalue"])
         insights_weak = sorted(insights_weak, key=lambda x: x["pvalue"])
         insights_none = sorted(insights_none, key=lambda x: x["pvalue"])
-        
 
-        i = 0
-        for insight in insights_strong:
-            fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
-            st.plotly_chart(fig)
-            Utils.newLines(5)
-            i += 1
-            if i >= 10:
-                break
+        if strong_toggle:
+            i = 0
+            for insight in insights_strong:
+                #fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+                fig = plot_barchart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+                st.plotly_chart(fig)
+                Utils.newLines(5)
+                i += 1
+                if i >= 10:
+                    break
+        
+        if medium_toggle:
+            i = 0
+            for insight in insights_strong:
+                fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+                st.plotly_chart(fig)
+                Utils.newLines(5)
+                i += 1
+                if i >= 10:
+                    break
+        
+        if weak_toggle:
+            i = 0
+            for insight in insights_strong:
+                fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+                st.plotly_chart(fig)
+                Utils.newLines(5)
+                i += 1
+                if i >= 10:
+                    break
+        
+        if none_toggle:
+            i = 0
+            for insight in insights_strong:
+                fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+                st.plotly_chart(fig)
+                Utils.newLines(5)
+                i += 1
+                if i >= 10:
+                    break
         
 
         #-----------------------------------------------------------------------
