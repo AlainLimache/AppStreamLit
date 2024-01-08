@@ -95,13 +95,9 @@ def run_page_insights(authenticator, role, qualifiers, variables):
             for awnser in qualifiers:
                 if data[variable].nunique() <= 2:
                     #pvalue = calculate_chi2(data[[variable, awnser]], variable, awnser)
-                    #print(pvalue)
-                    pvalue = 0.01
                     pvalue = cochran_armitage_test(data[[variable, awnser]], variable, awnser)
-                    #print(pvalue)
                 else:
-                    pvalue = 1
-                #pvalue = calculate_chi2(data[[variable, awnser]], variable, awnser)
+                    pvalue = kruskal_test(data[[variable, awnser]], variable, awnser)
                 combo = {
                     "variable": variable,
                     "awnser": awnser,
