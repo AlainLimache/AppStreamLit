@@ -54,7 +54,13 @@ def cochran_armitage_test(data, descriptor, answer):
     return cochran_armitage_p_value
 
 
-
+def kruskal_test(data, descriptor, answer):
+    df = data[[descriptor, answer]]
+    groups = []
+    for name, group in df.groupby(descriptor):
+        groups.append(group[answer].tolist())
+    kruskal_p_value = stats.kruskal(*groups).pvalue
+    return kruskal_p_value
 
 
 
