@@ -1,6 +1,8 @@
 from scipy.stats import chi2_contingency, chisquare
 import pandas as pd
-
+from scipy import stats
+import statsmodels.api as sm
+import scipy.stats as stats
 
 
 
@@ -39,3 +41,22 @@ def calculate_chi2(data, descriptor, awnser):
     chi2, pvalue, dof, expected = chi2_contingency(list(values.values()))
     """
     return pvalue
+
+
+def cochran_armitage_test(data, descriptor, answer):
+    df = data[[descriptor, answer]]
+
+    contingency_table = pd.crosstab(df[descriptor], df[answer])
+    table = contingency_table.to_numpy()
+    ctable = sm.stats.Table(table)
+    result = ctable.test_ordinal_association()
+    cochran_armitage_p_value = result.pvalue
+    return cochran_armitage_p_value
+
+
+
+
+
+
+
+

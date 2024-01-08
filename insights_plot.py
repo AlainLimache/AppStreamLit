@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
@@ -7,29 +8,9 @@ import pandas as pd
 from Utils import Utils
 
 # Ajout de grouped bar1: Réponse moyenne pour deux variables en utilisant des barres groupées.
-def plot_grouped_bar1_test(data, scatter_x_var, scatter_y_var, color_var, color_dict):
-    fig_grouped_bar = go.Figure()
-
-    unique_values = data[color_var].unique()
-
-    for value in unique_values:
-        data_subset = data[data[color_var] == value].groupby(scatter_x_var)[scatter_y_var].mean().reset_index()
-        fig_grouped_bar.add_trace(go.Bar(x=data_subset[scatter_x_var],
-                                         y=data_subset[scatter_y_var],
-                                         name=value))
-
-    fig_grouped_bar.update_layout(title=f"Réponse moyenne pour {scatter_x_var} et {color_var}",
-                                   xaxis_title=scatter_x_var,
-                                   yaxis_title="Réponse moyenne",
-                                   legend_title=color_var,
-                                   barmode='group',
-                                   hovermode="closest")
-    return fig_grouped_bar
-
-
-def plot_linechart(data, descriptor, awnser):
+def group_data(data, descriptor, awnser):
     """
-    Plot a linechart for the given data, descriptor and awnser.
+    Group data by descriptor and awnser.
     Parameters :
         data : dataframe
         descriptor : string
@@ -51,6 +32,32 @@ def plot_linechart(data, descriptor, awnser):
         df = df.sort_values(by=[awnser])
         # Add the dataframe to the dictionary
         data_per_descriptor[desc] = df
+
+    return data_per_descriptor
+
+
+def display_data(data, insights):
+    for insight in insights:
+            #fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+            df = data[[insight["variable"], insight["awnser"]]]
+            # Round values to nearest 1/3
+            df[insight["awnser"]] = np.round(np.ceil(df[insight["awnser"]] * 3) / 3, 2)
+            fig = plot_barchart(df, insight["variable"], insight["awnser"])
+            st.plotly_chart(fig)
+            st.write("PValue : ", insight["pvalue"])
+            Utils.newLines(5)
+
+
+def plot_linechart(data, descriptor, awnser):
+    """
+    Plot a linechart for the given data, descriptor and awnser.
+    Parameters :
+        data : dataframe
+        descriptor : string
+        awnser : string    
+    """
+    # Variable to stock the repartition of answers for each descriptor
+    data_per_descriptor = group_data(data, descriptor, awnser)
 
     # Plot the linechart
     fig = go.Figure()
@@ -77,22 +84,7 @@ def plot_barchart(data, descriptor, awnser):
         awnser : string    
     """
     # Variable to stock the repartition of answers for each descriptor
-    data_per_descriptor = dict()
-
-    # For each descriptor, we create a dataframe with the repartition of answers
-    for desc in data[descriptor].unique():
-        # Get the total number of answers for the descriptor
-        total_awnsers = len(data.loc[data[descriptor] == desc][awnser])
-
-        # Get the repartition of answers for the descriptor
-        df = pd.DataFrame(data.loc[data[descriptor] == desc][awnser].value_counts()*100/total_awnsers)
-        df = df.reset_index()
-        df.columns = [awnser, "count"]
-        # Sort the dataframe by the awnser
-        df = df.sort_values(by=[awnser])
-        # Add the dataframe to the dictionary
-        data_per_descriptor[desc] = df
-
+    data_per_descriptor = group_data(data, descriptor, awnser)
     
     # Plot the barchart
     fig = go.Figure()
