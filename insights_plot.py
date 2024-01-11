@@ -39,12 +39,16 @@ def group_data(data, descriptor, awnser):
 def display_data(data, insights):
     for insight in insights:
             #fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+            
             df = data[[insight["variable"], insight["awnser"]]]
             # Round values to nearest 1/3
             df[insight["awnser"]] = np.round(np.ceil(df[insight["awnser"]] * 3) / 3, 2)
             fig = plot_barchart(df, insight["variable"], insight["awnser"])
+            
+            #fig = plot_boxplot(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+            
             st.plotly_chart(fig)
-            st.write("PValue : ", insight["pvalue"])
+            # st.write("PValue : ", insight["pvalue"]) # TODO : Afficher la pvalue si besoin
             Utils.newLines(5)
 
 
@@ -91,6 +95,33 @@ def plot_barchart(data, descriptor, awnser):
 
     for desc in data_per_descriptor.keys():
         fig.add_trace(go.Bar(x=data_per_descriptor[desc][awnser], y=data_per_descriptor[desc]["count"], name=desc))
+
+    fig.update_layout(
+        title="Répartiton des réponses pour {} et {}".format(descriptor, awnser),
+        xaxis_title="Réponse",
+        yaxis_title="Pourcentage des réponses",
+        legend_title="Descripteur"
+    )
+
+    return fig
+
+
+def plot_boxplot(data, descriptor, awnser):
+    """
+    Plot a boxplot for the given data, descriptor and awnser.
+    Parameters :
+        data : dataframe
+        descriptor : string
+        awnser : string    
+    """
+    # Variable to stock the repartition of answers for each descriptor
+    data_per_descriptor = group_data(data, descriptor, awnser)
+
+    # Plot the boxplot
+    fig = go.Figure()
+
+    for desc in data_per_descriptor.keys():
+        fig.add_trace(go.Box(x=data_per_descriptor[desc][awnser], name=desc))
 
     fig.update_layout(
         title="Répartiton des réponses pour {} et {}".format(descriptor, awnser),

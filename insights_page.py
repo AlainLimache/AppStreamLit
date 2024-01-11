@@ -85,7 +85,7 @@ def run_page_insights(authenticator, role, qualifiers, variables):
 
         st.header("Visualisations")
         Utils.newLines(1)
-        if not insights_strong and not insights_medium and not insights_weak and not insights_none:
+        if not strong_toggle and not medium_toggle and not weak_toggle and not none_toggle:
             st.write("Aucun type d'insight n'a été sélectionné. Veuillez sélectionner au moins un type d'insight dans le menu de gauche.")
 
         #-----------------------------------------------------------------------
@@ -94,7 +94,7 @@ def run_page_insights(authenticator, role, qualifiers, variables):
         for variable in variables:            
             for awnser in qualifiers:
                 if data[variable].nunique() <= 2:
-                    #pvalue = calculate_chi2(data[[variable, awnser]], variable, awnser)
+                    # CHI2 si moins de 2 valeurs uniques ?
                     pvalue = cochran_armitage_test(data[[variable, awnser]], variable, awnser)
                 else:
                     pvalue = kruskal_test(data[[variable, awnser]], variable, awnser)
