@@ -124,15 +124,23 @@ def run_page_insights(authenticator, role, qualifiers, variables):
 
         if strong_toggle:
             display_data(data, insights_strong)
+            if len(insights_strong) == 0:
+                st.write("Aucun insight fort n'a été trouvé.")
         
         if medium_toggle:
             display_data(data, insights_medium)
+            if len(insights_medium) == 0:
+                st.write("Aucun insight moyen n'a été trouvé.")
         
         if weak_toggle:
             display_data(data, insights_weak)
+            if len(insights_weak) == 0:
+                st.write("Aucun insight faible n'a été trouvé.")
         
         if none_toggle:
             display_data(data, insights_none)
+            if len(insights_none) == 0:
+                st.write("Aucun insight nul n'a été trouvé.")
         
 
         #-----------------------------------------------------------------------
