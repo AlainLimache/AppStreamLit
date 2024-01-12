@@ -44,6 +44,9 @@ def run_page_insights(authenticator, role, qualifiers, variables):
     weak_toggle = st.sidebar.checkbox("Afficher les insights faibles", value=False)
     none_toggle = st.sidebar.checkbox("Afficher les insights nuls", value=False)
 
+    st.sidebar.title("Type de graphique")
+    graph_type = st.sidebar.radio("Type de graphique :", options=["Barres", "Graph", "Boites"], index=0, horizontal=True)
+
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file, delimiter=';', index_col=0)
         
@@ -123,22 +126,22 @@ def run_page_insights(authenticator, role, qualifiers, variables):
         insights_none = sorted(insights_none, key=lambda x: x["pvalue"])
 
         if strong_toggle:
-            display_data(data, insights_strong)
+            display_data(data, insights_strong, graph_type)
             if len(insights_strong) == 0:
                 st.write("Aucun insight fort n'a été trouvé.")
         
         if medium_toggle:
-            display_data(data, insights_medium)
+            display_data(data, insights_medium, graph_type)
             if len(insights_medium) == 0:
                 st.write("Aucun insight moyen n'a été trouvé.")
         
         if weak_toggle:
-            display_data(data, insights_weak)
+            display_data(data, insights_weak, graph_type)
             if len(insights_weak) == 0:
                 st.write("Aucun insight faible n'a été trouvé.")
         
         if none_toggle:
-            display_data(data, insights_none)
+            display_data(data, insights_none, graph_type)
             if len(insights_none) == 0:
                 st.write("Aucun insight nul n'a été trouvé.")
         

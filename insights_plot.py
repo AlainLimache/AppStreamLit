@@ -36,19 +36,20 @@ def group_data(data, descriptor, awnser):
     return data_per_descriptor
 
 
-def display_data(data, insights):
+def display_data(data, insights, graph_type):
     for insight in insights:
-            #fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
-            
-            df = data[[insight["variable"], insight["awnser"]]]
-            # Round values to nearest 1/3
-            df[insight["awnser"]] = np.round(np.ceil(df[insight["awnser"]] * 3) / 3, 2)
-            fig = plot_barchart(df, insight["variable"], insight["awnser"])
-            
-            #fig = plot_boxplot(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
-            
+            if graph_type == "Graph":
+                fig = plot_linechart(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+            elif graph_type == "Boites":
+                fig = plot_boxplot(data[[insight["variable"], insight["awnser"]]], insight["variable"], insight["awnser"])
+            else:
+                df = data[[insight["variable"], insight["awnser"]]]
+                # Round values to nearest 1/3
+                df[insight["awnser"]] = np.round(np.ceil(df[insight["awnser"]] * 3) / 3, 2)
+                fig = plot_barchart(df, insight["variable"], insight["awnser"])
+                        
             st.plotly_chart(fig)
-            # st.write("PValue : ", insight["pvalue"]) # TODO : Afficher la pvalue si besoin
+            st.write("PValue : ", insight["pvalue"]) # TODO : Afficher la pvalue si besoin
             Utils.newLines(5)
 
 
