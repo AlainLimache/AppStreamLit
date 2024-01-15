@@ -55,12 +55,12 @@ def run_page_insights(authenticator, role, qualifiers, variables):
             index = 1
             if data[column].dtype == 'object':
                 index = 0
-            radio_buttons[column] = st.sidebar.radio(column + ":", options=["Descriptive", "Réponce", "Ignorer"], index=index, horizontal=True)
+            radio_buttons[column] = st.sidebar.radio(column + ":", options=["Descriptive", "Réponse", "Ignorer"], index=index, horizontal=True)
             if radio_buttons[column] == "Descriptive":
                 variables.append(column)
                 if column in qualifiers:
                     qualifiers.remove(column)
-            elif radio_buttons[column] == "Réponce":
+            elif radio_buttons[column] == "Réponse":
                 qualifiers.append(column)
                 if column in variables:
                     variables.remove(column)
