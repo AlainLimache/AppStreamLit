@@ -3,10 +3,11 @@ import pandas as pd
 from scipy import stats
 import statsmodels.api as sm
 import scipy.stats as stats
+import streamlit as st
 
 
 
-
+@st.cache_data
 def cochran_armitage_test(data, descriptor, answer):
     df = data[[descriptor, answer]]
 
@@ -17,7 +18,7 @@ def cochran_armitage_test(data, descriptor, answer):
     cochran_armitage_p_value = result.pvalue
     return cochran_armitage_p_value
 
-
+@st.cache_data
 def kruskal_test(data, descriptor, answer):
     df = data[[descriptor, answer]]
     groups = []
@@ -27,7 +28,7 @@ def kruskal_test(data, descriptor, answer):
     return kruskal_p_value
 
 
-
+@st.cache_data
 def chi2_test(data, descriptor, answer):
     df = data[[descriptor, answer]]
 
