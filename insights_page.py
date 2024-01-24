@@ -22,6 +22,11 @@ def run_page_insights(authenticator, role, qualifiers, variables):
     insights_weak = list()
     insights_none = list()
 
+    if "nbInsightsToShow" not in st.session_state:
+        print("COUCOU 1")
+        st.session_state.nbInsightsToShow = 10
+        print(st.session_state.nbInsightsToShow)
+
     st.title("Analyse et visualisation de données de qualité de vie au travail pour une année")
 
     Utils.newLines(2)
@@ -125,28 +130,43 @@ def run_page_insights(authenticator, role, qualifiers, variables):
         insights_weak = sorted(insights_weak, key=lambda x: x["pvalue"])
         insights_none = sorted(insights_none, key=lambda x: x["pvalue"])
 
+        insights_to_show = list()
+
         if strong_toggle:
-            display_data(data, insights_strong, graph_type)
-            if len(insights_strong) == 0:
-                st.write("Aucun insight fort n'a été trouvé.")
+            insights_to_show += insights_strong
         
         if medium_toggle:
-            display_data(data, insights_medium, graph_type)
-            if len(insights_medium) == 0:
-                st.write("Aucun insight moyen n'a été trouvé.")
+            insights_to_show += insights_medium
         
         if weak_toggle:
-            display_data(data, insights_weak, graph_type)
-            if len(insights_weak) == 0:
-                st.write("Aucun insight faible n'a été trouvé.")
+            insights_to_show += insights_weak
         
         if none_toggle:
-            display_data(data, insights_none, graph_type)
-            if len(insights_none) == 0:
-                st.write("Aucun insight nul n'a été trouvé.")
+            insights_to_show += insights_none
+            
         
+        if len(insights_to_show) == 0:
+            st.write("Aucun insight séléctionné n'a été trouvé.")
+        else:
+            for insight in insights_to_show[:st.session_state.nbInsightsToShow]:
+                display_data(data, insight, graph_type)
+            if len(insights_to_show) > st.session_state.nbInsightsToShow:
+                st.write("Il y a encore ", len(insights_to_show) - st.session_state.nbInsightsToShow, "insights à afficher.")
+                Utils.newLines(1)
+                show_more_button = st.button("Afficher plus")
+                if show_more_button:
+                    st.session_state.nbInsightsToShow += 10
+        
+        st.write("Dedans : " + str(st.session_state.nbInsightsToShow))
+
 
         #-----------------------------------------------------------------------
 
     else:
         st.warning("Veuillez importer un fichier CSV.")
+
+
+
+
+
+
