@@ -23,9 +23,7 @@ def run_page_insights(authenticator, role, qualifiers, variables):
     insights_none = list()
 
     if "nbInsightsToShow" not in st.session_state:
-        print("COUCOU 1")
-        st.session_state.nbInsightsToShow = 10
-        print(st.session_state.nbInsightsToShow)
+        st.session_state.nbInsightsToShow = 25
 
     st.title("Analyse et visualisation de données de qualité de vie au travail pour une année")
 
@@ -153,11 +151,9 @@ def run_page_insights(authenticator, role, qualifiers, variables):
             if len(insights_to_show) > st.session_state.nbInsightsToShow:
                 st.write("Il y a encore ", len(insights_to_show) - st.session_state.nbInsightsToShow, "insights à afficher.")
                 Utils.newLines(1)
-                show_more_button = st.button("Afficher plus")
+                show_more_button = st.button("Afficher 25 insights de plus (ne marche pas toujours)")
                 if show_more_button:
-                    st.session_state.nbInsightsToShow += 10
-        
-        st.write("Dedans : " + str(st.session_state.nbInsightsToShow))
+                    st.session_state.nbInsightsToShow += 25
 
 
         #-----------------------------------------------------------------------
