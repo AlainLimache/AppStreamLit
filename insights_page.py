@@ -23,9 +23,7 @@ def run_page_insights(authenticator, role, qualifiers, variables):
     insights_none = list()
 
     if "nbInsightsToShow" not in st.session_state:
-        print("COUCOU 1")
         st.session_state.nbInsightsToShow = 25
-        print(st.session_state.nbInsightsToShow)
 
     st.title("Analyse et visualisation de données de qualité de vie au travail pour une année")
 
